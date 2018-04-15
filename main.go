@@ -7,6 +7,7 @@ import (
 	"github.com/Phantas0s/watcher"
 	"github.com/kylelemons/go-gypsy/yaml"
 	"log"
+	"os"
 	"os/exec"
 	"time"
 )
@@ -14,21 +15,21 @@ import (
 func main() {
 	w := watcher.New()
 
-	file := flag.String("config", "config.yml", "The config file")
+	file := flag.String("config", ".testomatic.yml", "The config file")
 	config := yaml.ConfigFile(*file)
 
-	// fireCmd(config)
-
-	root := toYamlMap(config.Root)
-
-	w.SetMaxEvents(1)
+	// 2 since the event can be writting file or writting directory ... to fix
+	w.SetMaxEvents(2)
 	w.FilterOps(watcher.Write)
 
 	go func() {
 		for {
 			select {
 			case event := <-w.Event:
-				fmt.Println(event) // Print the event's info.
+				if !event.IsDir() {
+					result := fireCmd(config, event)
+					fmt.Println(result)
+				}
 			case err := <-w.Error:
 				log.Fatalln(err)
 			case <-w.Closed:
@@ -37,50 +38,46 @@ func main() {
 		}
 	}()
 
-	filePath, err := config.Get("watcher.folder")
+	filePath := extractScalar(config, "watcher.folder")
+	root := toYamlMap(config.Root)
 	ext := extractExt(root)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
 	if err := w.AddSpecificFiles(filePath, ext); err != nil {
 		log.Fatalln(err)
 	}
 
-	fmt.Print("File watched: \n")
-	for path, f := range w.WatchedFiles() {
-		fmt.Printf("%s: %s\n", path, f.Name())
-	}
-
-	// Inject path of the file via command line argument
-
-	// Start the watching process - it'll check for changes every 100ms.
+	fmt.Print("Testomatic begins: \n")
 	if err := w.Start(time.Millisecond * 100); err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func fireCmd(config *yaml.File) {
+func fireCmd(config *yaml.File, event watcher.Event) string {
 	cmdPath, err := config.Get("watcher.command_path")
 	if err != nil {
 		fmt.Println(err)
 	}
-	execCmd(cmdPath)
+
+	fmt.Println(event.Name())
+	result := execCmd(cmdPath, event.Path)
+
+	return result
 }
 
-func execCmd(cmdPath string) {
-	cmd := exec.Command(cmdPath)
+func execCmd(cmdPath string, args ...string) string {
+	clear := exec.Command("clear")
+	cmd := exec.Command(cmdPath, args...)
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
+	clear.Stdout = os.Stdout
 
+	clear.Run()
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Printf("%q\n", out.String())
+	return out.String()
 }
 
 func toYamlMap(node yaml.Node) yaml.Map {
@@ -116,4 +113,13 @@ func extractExt(root yaml.Map) []string {
 	}
 
 	return result
+}
+
+func extractScalar(config *yaml.File, name string) string {
+	entry, err := config.Get(name)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return entry
 }

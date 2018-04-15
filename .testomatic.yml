@@ -4,4 +4,4 @@ watcher:
     - php
   command_path: /home/hypnos/workspace/sharetoall/bin/phpunit
   command_options:
-    - "--test-coverage"
+    - --test-coverage
