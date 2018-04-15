@@ -44,7 +44,6 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Printf("%#v", ext)
 	if err := w.AddSpecificFiles(filePath, ext); err != nil {
 		log.Fatalln(err)
 	}
@@ -87,7 +86,7 @@ func execCmd(cmdPath string) {
 func toYamlMap(node yaml.Node) yaml.Map {
 	m, ok := node.(yaml.Map)
 	if !ok {
-		panic(fmt.Sprintf("%v is not of type map", node))
+		log.Fatalf("%v is not of type map", node)
 	}
 	return m
 }
@@ -95,7 +94,15 @@ func toYamlMap(node yaml.Node) yaml.Map {
 func toYamlList(node yaml.Node) yaml.List {
 	m, ok := node.(yaml.List)
 	if !ok {
-		panic(fmt.Sprintf("%v is not of type map", node))
+		log.Fatalf("%v is not of type list", node)
+	}
+	return m
+}
+
+func toYamlScalar(node yaml.Node) yaml.Scalar {
+	m, ok := node.(yaml.Scalar)
+	if !ok {
+		log.Fatalf("%v is not of type scalar", node)
 	}
 	return m
 }
@@ -105,7 +112,7 @@ func extractExt(root yaml.Map) []string {
 	result := make([]string, list.Len())
 
 	for k, v := range list {
-		result[k] = "." + v.(yaml.Scalar).String()
+		result[k] = "." + toYamlScalar(v).String()
 	}
 
 	return result
