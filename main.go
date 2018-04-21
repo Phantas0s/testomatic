@@ -131,9 +131,8 @@ func extractOpt(root yaml.Map) []string {
 	result := make([]string, list.Len())
 
 	for k, v := range list {
-		str := toYamlScalar(v).String()
-		str = strings.Replace(str, "'", "", -1)
-		result[k] = str
+		// Delete single quotes
+		result[k] = strings.Replace(toYamlScalar(v).String(), "'", "", -1)
 	}
 
 	return result
