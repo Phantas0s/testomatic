@@ -1,0 +1,11 @@
+testomatic:
+  folder: src/Tests
+  ext:
+    - php
+    - go
+  command_path: docker-compose
+  command_options:
+    - exec
+    - "-T"
+    - 'php'
+    - bin/phpunit

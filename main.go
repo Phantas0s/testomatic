@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/Phantas0s/watcher"
+	"github.com/Phantas0s/yamlext"
 	"github.com/kylelemons/go-gypsy/yaml"
 )
 
@@ -23,7 +24,7 @@ func main() {
 	// 2 since the event can be writting file or writting directory ... to fix
 	w.SetMaxEvents(2)
 	w.FilterOps(watcher.Write)
-	filePath := extractScalar(config, "watcher.folder")
+	filePath := ExtractScalar(config, "testomatic.folder")
 
 	go func() {
 		for {
@@ -41,29 +42,29 @@ func main() {
 		}
 	}()
 
-	root := toYamlMap(config.Root)
-	ext := extractExt(root)
+	root := yamlext.ToMap(config.Root)
+	ext := ExtractExt(root)
 	if err := w.AddSpecificFiles(filePath, ext); err != nil {
 		log.Fatalln(err)
 	}
 
-	fmt.Print("Testomatic begins: \n")
+	fmt.Print("Testomatic is watching the files... \n")
 	if err := w.Start(time.Millisecond * 100); err != nil {
 		log.Fatalln(err)
 	}
 }
 
 func fireCmd(config *yaml.File, event watcher.Event, filepath string) string {
-	cmdPath, err := config.Get("watcher.command_path")
+	cmdPath, err := config.Get("testomatic.command_path")
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	options := extractOpt(toYamlMap(config.Root))
+	options := ExtractOpt(yamlext.ToMap(config.Root))
 
 	path := event.Path
-	if isAbsolute(event.Path) {
-		path = getRelative(event.Path, filepath)
+	if IsAbsolute(event.Path) {
+		path = CreateRelative(event.Path, filepath)
 	}
 
 	options = append(options, path)
@@ -91,54 +92,7 @@ func execCmd(cmdPath string, args []string) string {
 	return out.String()
 }
 
-func toYamlMap(node yaml.Node) yaml.Map {
-	m, ok := node.(yaml.Map)
-	if !ok {
-		log.Fatalf("%v is not of type map", node)
-	}
-	return m
-}
-
-func toYamlList(node yaml.Node) yaml.List {
-	m, ok := node.(yaml.List)
-	if !ok {
-		log.Fatalf("%v is not of type list", node)
-	}
-	return m
-}
-
-func toYamlScalar(node yaml.Node) yaml.Scalar {
-	m, ok := node.(yaml.Scalar)
-	if !ok {
-		log.Fatalf("%v is not of type scalar", node)
-	}
-	return m
-}
-
-func extractExt(root yaml.Map) []string {
-	list := toYamlList(toYamlMap(root["watcher"])["ext"])
-	result := make([]string, list.Len())
-
-	for k, v := range list {
-		result[k] = "." + toYamlScalar(v).String()
-	}
-
-	return result
-}
-
-func extractOpt(root yaml.Map) []string {
-	list := toYamlList(toYamlMap(root["watcher"])["command_options"])
-	result := make([]string, list.Len())
-
-	for k, v := range list {
-		// Delete single quotes
-		result[k] = strings.Replace(toYamlScalar(v).String(), "'", "", -1)
-	}
-
-	return result
-}
-
-func extractScalar(config *yaml.File, name string) string {
+func ExtractScalar(config *yaml.File, name string) string {
 	entry, err := config.Get(name)
 	if err != nil {
 		fmt.Println(err)
@@ -147,7 +101,31 @@ func extractScalar(config *yaml.File, name string) string {
 	return entry
 }
 
-func isAbsolute(path string) bool {
+func ExtractOpt(root yaml.Map) []string {
+	list := yamlext.ToList(yamlext.ToMap(root["testomatic"])["command_options"])
+	result := make([]string, list.Len())
+
+	for k, v := range list {
+		// Delete quotes
+		result[k] = strings.Replace(yamlext.ToScalar(v).String(), "'", "", -1)
+		result[k] = strings.Replace(result[k], "\"", "", -1)
+	}
+
+	return result
+}
+
+func ExtractExt(root yaml.Map) []string {
+	list := yamlext.ToList(yamlext.ToMap(root["testomatic"])["ext"])
+	result := make([]string, list.Len())
+
+	for k, v := range list {
+		result[k] = "." + yamlext.ToScalar(v).String()
+	}
+
+	return result
+}
+
+func IsAbsolute(path string) bool {
 	if path[0] == '/' {
 		return true
 	}
@@ -155,7 +133,7 @@ func isAbsolute(path string) bool {
 	return false
 }
 
-func getRelative(path string, filepath string) string {
+func CreateRelative(path string, filepath string) string {
 	newpath := strings.SplitAfter(path, filepath)
 	path = filepath + newpath[1]
 
