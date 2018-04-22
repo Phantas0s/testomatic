@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Phantas0s/yamlext"
+	"github.com/Phantas0s/testomatic/yamlext"
 	"github.com/kylelemons/go-gypsy/yaml"
 	"testing"
 )

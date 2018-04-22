@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Phantas0s/testomatic/yamlext"
 	"github.com/Phantas0s/watcher"
-	"github.com/Phantas0s/yamlext"
 	"github.com/gen2brain/beeep"
 	"github.com/kylelemons/go-gypsy/yaml"
 )
