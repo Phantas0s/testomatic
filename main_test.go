@@ -10,6 +10,10 @@ import (
 var config = yaml.ConfigFile(".testomatic_test.yml")
 var root = yamlext.ToMap(config.Root)
 
+func ErrorTest(expected string, got string) string {
+	return fmt.Sprintf("Expected '%s' got '%s'", expected, got)
+}
+
 func TestIsAbsolute(t *testing.T) {
 	if v := IsAbsolute("/home/user/lala"); v != true {
 		t.Errorf(ErrorTest("true", fmt.Sprintf("%v", v)))
@@ -61,8 +65,4 @@ func TestExtractExt(t *testing.T) {
 	if v[1] != ".go" {
 		t.Errorf(ErrorTest(".go", v[1]))
 	}
-}
-
-func ErrorTest(expected string, got string) string {
-	return fmt.Sprintf("Expected '%s' got '%s'", expected, got)
 }

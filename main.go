@@ -7,11 +7,13 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 	"time"
 
 	"github.com/Phantas0s/watcher"
 	"github.com/Phantas0s/yamlext"
+	"github.com/gen2brain/beeep"
 	"github.com/kylelemons/go-gypsy/yaml"
 )
 
@@ -25,6 +27,7 @@ func main() {
 	w.SetMaxEvents(2)
 	w.FilterOps(watcher.Write)
 	filePath := ExtractScalar(config, "testomatic.folder")
+	root := yamlext.ToMap(config.Root)
 
 	go func() {
 		for {
@@ -33,6 +36,7 @@ func main() {
 				if !event.IsDir() {
 					result := fireCmd(config, event, filePath)
 					fmt.Println(result)
+					Notify(config, result)
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)
@@ -42,7 +46,6 @@ func main() {
 		}
 	}()
 
-	root := yamlext.ToMap(config.Root)
 	ext := ExtractExt(root)
 	if err := w.AddSpecificFiles(filePath, ext); err != nil {
 		log.Fatalln(err)
@@ -138,4 +141,13 @@ func CreateRelative(path string, filepath string) string {
 	path = filepath + newpath[1]
 
 	return path
+}
+
+// How can I test that??
+func Notify(config *yaml.File, result string) {
+	if match, _ := regexp.MatchString(ExtractScalar(config, "testomatic.notification.notify_success"), result); match {
+		beeep.Notify("Success!", result, ExtractScalar(config, "testomatic.notification.notify_img_success"))
+	} else {
+		beeep.Alert("Failure!", result, ExtractScalar(config, "testomatic.notification.notify_img_failure"))
+	}
 }

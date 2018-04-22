@@ -9,3 +9,7 @@ testomatic:
     - "-T"
     - 'php'
     - bin/phpunit
+  notification:
+    notify_img_failure: /home/superUser/.autotest/images/failure.png
+    notify_img_success: /home/superUser/.autotest/images/success.png
+    notify_success: OK
