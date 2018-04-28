@@ -1,0 +1,17 @@
+testomatic:
+  watch:
+    folder: src/Tests
+    ext:
+      - php
+      - go
+  command:
+    path: docker-compose
+    options:
+      - exec
+      - "-T"
+      - 'php'
+      - bin/phpunit
+  notification:
+    img_failure: /home/superUser/.autotest/images/failure.png
+    img_success: /home/superUser/.autotest/images/success.png
+    success: OK

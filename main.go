@@ -26,7 +26,7 @@ func main() {
 	// 2 since the event can be writting file or writting directory ... to fix
 	w.SetMaxEvents(2)
 	w.FilterOps(watcher.Write)
-	filePath := ExtractScalar(config, "testomatic.folder")
+	filePath := ExtractScalar(config, "testomatic.watch.folder")
 	root := yamlext.ToMap(config.Root)
 
 	go func() {
@@ -58,7 +58,7 @@ func main() {
 }
 
 func fireCmd(config *yaml.File, event watcher.Event, filepath string) string {
-	cmdPath, err := config.Get("testomatic.command_path")
+	cmdPath, err := config.Get("testomatic.command.path")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -105,7 +105,7 @@ func ExtractScalar(config *yaml.File, name string) string {
 }
 
 func ExtractOpt(root yaml.Map) []string {
-	list := yamlext.ToList(yamlext.ToMap(root["testomatic"])["command_options"])
+	list := yamlext.ToList(yamlext.ToMap(yamlext.ToMap(root["testomatic"])["command"])["options"])
 	result := make([]string, list.Len())
 
 	for k, v := range list {
@@ -118,7 +118,7 @@ func ExtractOpt(root yaml.Map) []string {
 }
 
 func ExtractExt(root yaml.Map) []string {
-	list := yamlext.ToList(yamlext.ToMap(root["testomatic"])["ext"])
+	list := yamlext.ToList(yamlext.ToMap(yamlext.ToMap(root["testomatic"])["watch"])["ext"])
 	result := make([]string, list.Len())
 
 	for k, v := range list {
@@ -145,9 +145,9 @@ func CreateRelative(path string, filepath string) string {
 
 // How can I test that??
 func Notify(config *yaml.File, result string) {
-	if match, _ := regexp.MatchString(ExtractScalar(config, "testomatic.notification.notify_success"), result); match {
-		beeep.Notify("Success!", result, ExtractScalar(config, "testomatic.notification.notify_img_success"))
+	if match, _ := regexp.MatchString(ExtractScalar(config, "testomatic.notification.success"), result); match {
+		beeep.Notify("Success!", result, ExtractScalar(config, "testomatic.notification.img_success"))
 	} else {
-		beeep.Alert("Failure!", result, ExtractScalar(config, "testomatic.notification.notify_img_failure"))
+		beeep.Alert("Failure!", result, ExtractScalar(config, "testomatic.notification.img_failure"))
 	}
 }
