@@ -1,11 +1,16 @@
 watch:
-  folder: ./
-  regex: test.go
+  folder: src/Tests
+  ext:
+    - php
+    - go
 command:
-  path: go
+  path: docker-compose
   options:
-    - test
+    - exec
+    - "-T"
+    - 'php'
+    - bin/phpunit
 notification:
   img_failure: /home/superUser/.autotest/images/failure.png
   img_success: /home/superUser/.autotest/images/success.png
-  success: ok
+  success: OK

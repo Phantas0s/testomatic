@@ -4,39 +4,64 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 
-	"github.com/Phantas0s/testomatic/yamlext"
+	"github.com/Phantas0s/testomatic/config"
+	"github.com/Phantas0s/testomatic/notify"
 	"github.com/Phantas0s/watcher"
-	"github.com/gen2brain/beeep"
-	"github.com/kylelemons/go-gypsy/yaml"
 )
+
+var conf config.YamlConf
+
+// init is called prior to main.
+func init() {
+	// Change the device for logging to stdout.
+	log.SetOutput(os.Stdout)
+}
 
 func main() {
 	w := watcher.New()
 
 	file := flag.String("config", ".testomatic.yml", "The config file")
-	config := yaml.ConfigFile(*file)
+	data, err := ioutil.ReadFile(*file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := conf.Parse(data); err != nil {
+		log.Fatal(err)
+	}
 
 	// 2 since the event can be writting file or writting directory ... to fix
 	w.SetMaxEvents(2)
 	w.FilterOps(watcher.Write)
-	filePath := ExtractScalar(config, "testomatic.watch.folder")
-	root := yamlext.ToMap(config.Root)
+	filePath := conf.Watch.Folder
+
+	if err := w.AddSpecificFiles(filePath, conf.Watch.Ext); err != nil {
+		log.Fatalln(err)
+	}
+
+	// Print a list of all of the files and folders currently
+	// being watched and their paths.
+	for path, f := range w.WatchedFiles() {
+		fmt.Printf("%s: %s\n", path, f.Name())
+	}
 
 	go func() {
 		for {
 			select {
 			case event := <-w.Event:
 				if !event.IsDir() {
-					result := fireCmd(config, event, filePath)
+					result := fireCmd(conf.Command.Path, conf.Command.Options, event, filePath)
 					fmt.Println(result)
-					Notify(config, result)
+					Notify(conf, result)
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)
@@ -46,28 +71,17 @@ func main() {
 		}
 	}()
 
-	ext := ExtractExt(root)
-	if err := w.AddSpecificFiles(filePath, ext); err != nil {
-		log.Fatalln(err)
-	}
-
 	fmt.Print("Testomatic is watching the files... \n")
 	if err := w.Start(time.Millisecond * 100); err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func fireCmd(config *yaml.File, event watcher.Event, filepath string) string {
-	cmdPath, err := config.Get("testomatic.command.path")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	options := ExtractOpt(yamlext.ToMap(config.Root))
-
+func fireCmd(cmdPath string, options []string, event watcher.Event, confPath string) string {
 	path := event.Path
-	if IsAbsolute(event.Path) {
-		path = CreateRelative(event.Path, filepath)
+
+	if filepath.IsAbs(event.Path) && conf.Watch.Abs != true {
+		path = CreateRelative(event.Path, confPath)
 	}
 
 	options = append(options, path)
@@ -79,6 +93,8 @@ func fireCmd(config *yaml.File, event watcher.Event, filepath string) string {
 func execCmd(cmdPath string, args []string) string {
 	var out bytes.Buffer
 	var stderr bytes.Buffer
+
+	// fmt.Println(cmdPath, args)
 	cmd := exec.Command(cmdPath, args...)
 	cmd.Stderr = &stderr
 	cmd.Stdout = &out
@@ -95,59 +111,30 @@ func execCmd(cmdPath string, args []string) string {
 	return out.String()
 }
 
-func ExtractScalar(config *yaml.File, name string) string {
-	entry, err := config.Get(name)
-	if err != nil {
-		fmt.Println(err)
+func CreateRelative(path string, confPath string) string {
+	// TODO to refactor...
+	if strings.Index(confPath, ".") != -1 {
+		currentDir, _ := filepath.Abs(".")
+		split := strings.SplitAfter(currentDir, "/")
+		currentDir = split[len(split)-1]
+		newpath := strings.SplitAfter(path, currentDir)
+		fmt.Println("." + newpath[1])
+
+		return "." + newpath[1]
 	}
 
-	return entry
-}
-
-func ExtractOpt(root yaml.Map) []string {
-	list := yamlext.ToList(yamlext.ToMap(yamlext.ToMap(root["testomatic"])["command"])["options"])
-	result := make([]string, list.Len())
-
-	for k, v := range list {
-		// Delete quotes
-		result[k] = strings.Replace(yamlext.ToScalar(v).String(), "'", "", -1)
-		result[k] = strings.Replace(result[k], "\"", "", -1)
-	}
-
-	return result
-}
-
-func ExtractExt(root yaml.Map) []string {
-	list := yamlext.ToList(yamlext.ToMap(yamlext.ToMap(root["testomatic"])["watch"])["ext"])
-	result := make([]string, list.Len())
-
-	for k, v := range list {
-		result[k] = "." + yamlext.ToScalar(v).String()
-	}
-
-	return result
-}
-
-func IsAbsolute(path string) bool {
-	if path[0] == '/' {
-		return true
-	}
-
-	return false
-}
-
-func CreateRelative(path string, filepath string) string {
-	newpath := strings.SplitAfter(path, filepath)
-	path = filepath + newpath[1]
+	newpath := strings.SplitAfter(path, confPath)
+	path = confPath + newpath[1]
 
 	return path
 }
 
 // How can I test that??
-func Notify(config *yaml.File, result string) {
-	if match, _ := regexp.MatchString(ExtractScalar(config, "testomatic.notification.success"), result); match {
-		beeep.Notify("Success!", result, ExtractScalar(config, "testomatic.notification.img_success"))
+func Notify(conf config.YamlConf, result string) {
+	notifier := new(notify.Beeep)
+	if match, _ := regexp.MatchString(conf.Notification.SuccessRegex, result); match {
+		notifier.Info("Success!", result, conf.Notification.ImgSuccess)
 	} else {
-		beeep.Alert("Failure!", result, ExtractScalar(config, "testomatic.notification.img_failure"))
+		notifier.Alert("Failure!", result, conf.Notification.ImgFailure)
 	}
 }
