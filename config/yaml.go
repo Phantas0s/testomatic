@@ -7,7 +7,7 @@ import (
 type (
 	watch struct {
 		Folder string
-		Ext    []string
+		Reg    string
 		Abs    bool
 	}
 

@@ -1,8 +1,6 @@
 watch:
   folder: src/Tests
-  ext:
-    - php
-    - go
+  reg: "Test.php"
 command:
   path: docker-compose
   options:

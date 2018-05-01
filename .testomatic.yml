@@ -1,6 +1,6 @@
 watch:
   folder: ./
-  regex: test.go
+  reg: _test.go
 command:
   path: go
   options:

@@ -44,7 +44,8 @@ func main() {
 	w.FilterOps(watcher.Write)
 	filePath := conf.Watch.Folder
 
-	if err := w.AddSpecificFiles(filePath, conf.Watch.Ext); err != nil {
+	w.AllowByRegex(conf.Watch.Reg)
+	if err := w.AddRecursive(filePath); err != nil {
 		log.Fatalln(err)
 	}
 

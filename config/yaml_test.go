@@ -24,8 +24,7 @@ func TestParse(t *testing.T) {
 	}
 
 	assert("src/Tests", config.Watch.Folder)
-	assert("php", config.Watch.Ext[0])
-	assert("go", config.Watch.Ext[1])
+	assert("Test.php", config.Watch.Reg)
 	assert("docker-compose", config.Command.Path)
 	assert("exec", config.Command.Options[0])
 	assert("-T", config.Command.Options[1])
