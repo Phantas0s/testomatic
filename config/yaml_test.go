@@ -33,4 +33,5 @@ func TestParse(t *testing.T) {
 	assert("/home/superUser/.autotest/images/success.png", config.Notification.ImgSuccess)
 	assert("/home/superUser/.autotest/images/failure.png", config.Notification.ImgFailure)
 	assert("OK", config.Notification.SuccessRegex)
+	assert(true, config.Notification.DisplayResult)
 }

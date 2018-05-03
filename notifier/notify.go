@@ -1,4 +1,4 @@
-package notify
+package notifier
 
 type Notifier interface {
 	Info(title string, message string, img string) error

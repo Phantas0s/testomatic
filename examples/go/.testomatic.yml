@@ -1,8 +1,7 @@
 watch:
-  folder: ./
+  folder: ./...
   reg: _test.go
 # possible: current, dir, all
-test: dir
 command:
   path: go
   options:

@@ -14,11 +14,12 @@ import (
 	"time"
 
 	"github.com/Phantas0s/testomatic/config"
-	"github.com/Phantas0s/testomatic/notify"
+	"github.com/Phantas0s/testomatic/notifier"
 	"github.com/Phantas0s/watcher"
 )
 
 var conf config.YamlConf
+var file = flag.String("config", ".testomatic.yml", "The config file")
 
 // init is called prior to main.
 func init() {
@@ -27,9 +28,9 @@ func init() {
 }
 
 func main() {
+	flag.Parse()
 	w := watcher.New()
 
-	file := flag.String("config", ".testomatic.yml", "The config file")
 	data, err := ioutil.ReadFile(*file)
 	if err != nil {
 		log.Fatal(err)
@@ -62,7 +63,8 @@ func main() {
 				if !event.IsDir() {
 					result := fireCmd(conf.Command.Path, conf.Command.Options, event, filePath)
 					fmt.Println(result)
-					Notify(conf, result)
+
+					notify(conf, result)
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)
@@ -82,7 +84,7 @@ func fireCmd(cmdPath string, options []string, event watcher.Event, confPath str
 	path := event.Path
 
 	if filepath.IsAbs(event.Path) && conf.Watch.Abs != true {
-		path = CreateRelative(event.Path, confPath)
+		path = CreateRelative(event.Path, confPath, conf.Test)
 	}
 
 	options = append(options, path)
@@ -112,30 +114,48 @@ func execCmd(cmdPath string, args []string) string {
 	return out.String()
 }
 
-func CreateRelative(path string, confPath string) string {
-	// TODO to refactor...
+func CreateRelative(
+	path string,
+	confPath string,
+	testRealm string,
+) string {
+	newpath := make([]string, 2)
 	if strings.Index(confPath, ".") != -1 {
+		confPath = "."
 		currentDir, _ := filepath.Abs(".")
 		split := strings.SplitAfter(currentDir, "/")
 		currentDir = split[len(split)-1]
-		newpath := strings.SplitAfter(path, currentDir)
-		fmt.Println("." + newpath[1])
-
-		return "." + newpath[1]
+		newpath = strings.SplitAfter(path, currentDir)
+	} else {
+		newpath = strings.SplitAfter(path, confPath)
 	}
 
-	newpath := strings.SplitAfter(path, confPath)
-	path = confPath + newpath[1]
+	if testRealm == "dir" {
+		return confPath + filepath.Dir(newpath[1])
+	}
 
-	return path
+	if testRealm == "current" {
+		return confPath + newpath[1]
+	}
+
+	if testRealm == "all" {
+		return confPath
+	}
+
+	return ""
 }
 
-// How can I test that??
-func Notify(conf config.YamlConf, result string) {
-	notifier := new(notify.Beeep)
+func notify(conf config.YamlConf, result string) {
+	notifier := new(notifier.Beeep)
+	mess := ""
+
+	if conf.Notification.DisplayResult {
+		mess = result
+	}
+
 	if match, _ := regexp.MatchString(conf.Notification.SuccessRegex, result); match {
-		notifier.Info("Success!", result, conf.Notification.ImgSuccess)
+		notifier.Info("Success!", mess, conf.Notification.ImgSuccess)
 	} else {
-		notifier.Alert("Failure!", result, conf.Notification.ImgFailure)
+		notifier.Alert("Failure!", mess, conf.Notification.ImgFailure)
 	}
 }

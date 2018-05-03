@@ -12,3 +12,4 @@ notification:
   img_failure: /home/superUser/.autotest/images/failure.png
   img_success: /home/superUser/.autotest/images/success.png
   success: OK
+  display_result: true
