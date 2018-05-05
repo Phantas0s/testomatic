@@ -3,7 +3,7 @@ watch:
   regex: "Test.php"
   abs: false
   ignore_hidden: true
-  overwrite_path: ./...
+  ignore_path: true
 command:
   path: docker-compose
   options:

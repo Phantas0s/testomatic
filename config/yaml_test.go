@@ -27,7 +27,7 @@ func TestParse(t *testing.T) {
 	assert("Test.php", config.Watch.Regex)
 	assert(false, config.Watch.Abs)
 	assert(true, config.Watch.IgnoreHidden)
-	assert("./...", config.Watch.OverwritePath)
+	assert(true, config.Watch.IgnorePath)
 	assert("docker-compose", config.Command.Path)
 	assert("exec", config.Command.Options[0])
 	assert("-T", config.Command.Options[1])

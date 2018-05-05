@@ -4,12 +4,12 @@ watch:
   folder: ./
   regex: "_test.go"
   ignore_hidden: true
-  overwrite_path: ./...
-# possible: current, dir, all
+  ignore_path: true
 command:
   path: go
   options:
     - test
+    - ./..
 notification:
   img_failure: /home/superUser/.testomatic/images/failure.png
   img_success: /home/superUser/.testomatic/images/success.png

@@ -6,11 +6,11 @@ import (
 
 type (
 	watch struct {
-		Folder        string
-		Regex         string
-		Abs           bool
-		IgnoreHidden  bool   `yaml:"ignore_hidden"`
-		OverwritePath string `yaml:"overwrite_path"`
+		Folder       string
+		Regex        string
+		Abs          bool
+		IgnoreHidden bool `yaml:"ignore_hidden"`
+		IgnorePath   bool `yaml:"ignore_path"`
 	}
 
 	command struct {

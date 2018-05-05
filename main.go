@@ -88,8 +88,8 @@ func fireCmd(cmdPath string, options []string, event watcher.Event, confPath str
 		path = CreateRelative(event.Path, confPath, conf.Test)
 	}
 
-	if len(conf.Watch.OverwritePath) > 0 {
-		path = conf.Watch.OverwritePath
+	if conf.Watch.IgnorePath {
+		path = ""
 	}
 
 	options = append(options, path)
