@@ -6,9 +6,11 @@ import (
 
 type (
 	watch struct {
-		Folder string
-		Reg    string
-		Abs    bool
+		Folder        string
+		Regex         string
+		Abs           bool
+		IgnoreHidden  bool   `yaml:"ignore_hidden"`
+		OverwritePath string `yaml:"overwrite_path"`
 	}
 
 	command struct {
@@ -32,7 +34,5 @@ type (
 )
 
 func (c *YamlConf) Parse(data []byte) error {
-	c.Test = "current"
-	c.Notification.DisplayResult = true
 	return yaml.Unmarshal(data, c)
 }

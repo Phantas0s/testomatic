@@ -1,6 +1,9 @@
 watch:
   folder: src/Tests
-  reg: "Test.php"
+  regex: "Test.php"
+  abs: false
+  ignore_hidden: true
+  overwrite_path: ./...
 command:
   path: docker-compose
   options:

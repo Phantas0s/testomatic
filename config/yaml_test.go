@@ -13,7 +13,7 @@ func assert(expected interface{}, got interface{}) {
 }
 
 func TestParse(t *testing.T) {
-	data, err := ioutil.ReadFile("./.testomatic.yml")
+	data, err := ioutil.ReadFile("./testomatic.yml")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,7 +24,10 @@ func TestParse(t *testing.T) {
 	}
 
 	assert("src/Tests", config.Watch.Folder)
-	assert("Test.php", config.Watch.Reg)
+	assert("Test.php", config.Watch.Regex)
+	assert(false, config.Watch.Abs)
+	assert(true, config.Watch.IgnoreHidden)
+	assert("./...", config.Watch.OverwritePath)
 	assert("docker-compose", config.Command.Path)
 	assert("exec", config.Command.Options[0])
 	assert("-T", config.Command.Options[1])

@@ -45,7 +45,8 @@ func main() {
 	w.FilterOps(watcher.Write)
 	filePath := conf.Watch.Folder
 
-	w.FilterFiles(conf.Watch.Reg)
+	w.IgnoreHiddenFiles(conf.Watch.IgnoreHidden)
+	w.FilterFiles(conf.Watch.Regex)
 	if err := w.AddRecursive(filePath); err != nil {
 		log.Fatalln(err)
 	}
@@ -85,6 +86,10 @@ func fireCmd(cmdPath string, options []string, event watcher.Event, confPath str
 
 	if filepath.IsAbs(event.Path) && conf.Watch.Abs != true {
 		path = CreateRelative(event.Path, confPath, conf.Test)
+	}
+
+	if len(conf.Watch.OverwritePath) > 0 {
+		path = conf.Watch.OverwritePath
 	}
 
 	options = append(options, path)
