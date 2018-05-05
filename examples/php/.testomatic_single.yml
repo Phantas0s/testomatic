@@ -1,0 +1,18 @@
+# Only execute the watched test
+watch:
+  folder: src/Tests/
+  regex: "Test.php"
+  ignore_hidden: true
+test: current
+command:
+  path: docker-compose
+  options:
+    - exec
+    - "-T"
+    - php
+    - bin/phpunit
+notification:
+  img_failure: /home/superUser/.testomatic/images/failure.png
+  img_success: /home/superUser/.testomatic/images/success.png
+  success: OK
+  display_result: false

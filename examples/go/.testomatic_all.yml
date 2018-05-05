@@ -1,0 +1,17 @@
+# Execute all the project tests
+
+watch:
+  folder: ./
+  regex: "_test.go"
+  ignore_hidden: true
+  overwrite_path: ./...
+# possible: current, dir, all
+command:
+  path: go
+  options:
+    - test
+notification:
+  img_failure: /home/superUser/.testomatic/images/failure.png
+  img_success: /home/superUser/.testomatic/images/success.png
+  success: ok
+  display_result: false

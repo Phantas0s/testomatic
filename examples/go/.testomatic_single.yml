@@ -1,13 +1,15 @@
+# Test only the single test
 watch:
   folder: ./...
   reg: _test.go
 # possible: current, dir, all
+test: dir
 command:
   path: go
   options:
     - test
 notification:
-  img_failure: /home/superUser/.autotest/images/failure.png
-  img_success: /home/superUser/.autotest/images/success.png
+  img_failure: /home/superUser/.testomatic/images/failure.png
+  img_success: /home/superUser/.testomatic/images/success.png
   success: ok
   display_result: true
