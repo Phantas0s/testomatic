@@ -6,22 +6,22 @@ import (
 
 type (
 	watch struct {
-		Folder       string
+		Root         string
 		Regex        string
-		Abs          bool
 		IgnoreHidden bool `yaml:"ignore_hidden"`
-		IgnorePath   bool `yaml:"ignore_path"`
+		Abs          bool
 	}
 
 	command struct {
-		Path    string
-		Options []string
+		Bin        string
+		IgnorePath bool `yaml:"ignore_path"`
+		Options    []string
 	}
 
 	notification struct {
 		ImgFailure    string `yaml:"img_failure"`
 		ImgSuccess    string `yaml:"img_success"`
-		SuccessRegex  string `yaml:"success"`
+		RegexSuccess  string `yaml:"regex_success"`
 		DisplayResult bool   `yaml:"display_result"`
 	}
 

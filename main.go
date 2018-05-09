@@ -43,11 +43,10 @@ func main() {
 	// 2 since the event can be writting file or writting directory ... to fix
 	w.SetMaxEvents(2)
 	w.FilterOps(watcher.Write)
-	filePath := conf.Watch.Folder
 
 	w.IgnoreHiddenFiles(conf.Watch.IgnoreHidden)
 	w.FilterFiles(conf.Watch.Regex)
-	if err := w.AddRecursive(filePath); err != nil {
+	if err := w.AddRecursive(conf.Watch.Root); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -62,7 +61,7 @@ func main() {
 			select {
 			case event := <-w.Event:
 				if !event.IsDir() {
-					result := fireCmd(conf.Command.Path, conf.Command.Options, event, filePath)
+					result := fireCmd(event)
 					fmt.Println(result)
 
 					notify(conf, result)
@@ -81,21 +80,19 @@ func main() {
 	}
 }
 
-func fireCmd(cmdPath string, options []string, event watcher.Event, confPath string) string {
+func fireCmd(event watcher.Event) string {
+	if conf.Command.IgnorePath {
+		return execCmd(conf.Command.Bin, conf.Command.Options)
+	}
+
 	path := event.Path
 
 	if filepath.IsAbs(event.Path) && conf.Watch.Abs != true {
-		path = CreateRelative(event.Path, confPath, conf.Test)
+		path = CreateRelative(event.Path, conf.Watch.Root, conf.Test)
 	}
 
-	if conf.Watch.IgnorePath {
-		path = ""
-	}
-
-	options = append(options, path)
-	result := execCmd(cmdPath, options)
-
-	return result
+	options := append(conf.Command.Options, path)
+	return execCmd(conf.Command.Bin, options)
 }
 
 func execCmd(cmdPath string, args []string) string {
@@ -158,9 +155,10 @@ func notify(conf config.YamlConf, result string) {
 		mess = result
 	}
 
-	if match, _ := regexp.MatchString(conf.Notification.SuccessRegex, result); match {
+	if match, _ := regexp.MatchString(conf.Notification.RegexSuccess, result); match {
 		notifier.Info("Success!", mess, conf.Notification.ImgSuccess)
 	} else {
 		notifier.Alert("Failure!", mess, conf.Notification.ImgFailure)
 	}
+
 }
