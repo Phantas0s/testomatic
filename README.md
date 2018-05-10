@@ -3,18 +3,11 @@
 `testomatic` is a simple CLI which watch and run unit tests automatically on save.
 The result will appear in the terminal as well as a desktop notification.
 
-It will display a desktop notification and the result will appear in your terminal.
 
-## Disclaimer
-
-- I only tested `testomatic` on Linux (Arch linux). It might not work on macOS or Windows.
-- You can use testomatic to run `Golang` and `PHPUnit` tests automatically. 
-The configuration should be flexible enough for you to use it to other test frameworks / languages.
-
-[Installation](#installation)
-[Configuration file](#configuration-file)
-[Examples](#examples)
-[Contributing](#contributing)
+[Installation](#installation)  
+[Configuration file](#configuration-file)  
+[Examples](#examples)  
+[Contributing](#contributing)  
 
 # Installation
 
@@ -111,3 +104,8 @@ I included in the `php` examples how to run tests in docker using `docker-compos
 
 Pull request is the way ;)
 
+## Disclaimer
+
+- I only tested `testomatic` on Linux (Arch linux). It might not work on macOS or Windows.
+- You can use testomatic to run `Golang` and `PHPUnit` tests automatically. 
+The configuration should be flexible enough for you to use it with other test frameworks / languages.
