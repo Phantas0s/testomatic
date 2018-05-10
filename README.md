@@ -8,8 +8,9 @@ The result will appear in the terminal as well as a desktop notification.
 [Configuration file](#configuration-file)  
 [Examples](#examples)  
 [Contributing](#contributing)  
+[Disclaimer](#disclaimer)  
 
-# Installation
+## Installation
 
 You can find the releases of testomatic here: [Github releases](https://github.com/Phantas0s/testomatic/releases)
 
@@ -21,7 +22,7 @@ cd /usr/local/bin && sudo curl -LO https://github.com/Phantas0s/testomatic/relea
 
 You can now normally run `testomatic` from anywhere.
 
-# How it works
+## How it works
 
 When you run `testomatic` it will:
 
@@ -32,7 +33,7 @@ When you run `testomatic` it will:
 
 This general behavior can be used to run unit tests when you save them.
 
-# Configuration file
+## Configuration file
 
 testomatic need a valid `yaml` configuration file. The best is to create a `.testomatic` file at the root of your project.
 
@@ -64,7 +65,7 @@ notification:
   display_result: true
 ```
 
-## watch
+### watch
 
 | attribute     | value                                                                                                            | value type | required | default |
 |---------------|------------------------------------------------------------------------------------------------------------------|------------|----------|---------|
@@ -72,7 +73,7 @@ notification:
 | regex         | Every filename matching this regex will be watched.                                                              | string     | yes      | *empty* |
 | ignore_hidden | Any files or folders beginning by a point `.` won't be watched                                                   | boolean    | no       | `false` |
 
-## command
+### command
 
 | attribute   | value                                                                                                                                                           | value type                       | required | default   |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------|----------|-----------|
@@ -82,7 +83,7 @@ notification:
 | ignore_path | Doesn't use the path of the file saved as command line option                                                                                                   | boolean                          | yes      | *empty*   |
 | options     | Options to pass to the command line interface                                                                                                                   | array                            | no       | *empty*   |
 
-## notification
+### notification
 
 | attribute      | value                                                                | value type | required | default |
 |----------------|----------------------------------------------------------------------|------------|----------|---------|
@@ -94,12 +95,12 @@ notification:
 | display_result | Display the return of the command in the notification box            | boolean    | no       | false   |
 
 
-# Examples
+## Examples
 
 You will find in the folder `examples` tested configuration files for running `PHPUnit` and `go test`.
 I included in the `php` examples how to run tests in docker using `docker-compose` with or without notifications.
 
-# Contributing
+## Contributing
 
 Pull request is the way ;)
 
