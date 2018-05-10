@@ -78,9 +78,9 @@ notification:
 | attribute   | value                                                                                                                                                           | value type                       | required | default   |
 |-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------|----------|-----------|
 | bin         | Path of the command line interface to execute                                                                                                                   | string                           | yes      | *empty*   |
-| scope       | The command use the path of the saved file(`current`), the directory of the saved file (`dir`) or simply the root folder defined in `watch` (`all`) as argument | string - `current`, `dir`, `all` | yes      | `current` |
+| scope       | The command use the path of the saved file(`current`), the directory of the saved file (`dir`) or simply the root folder defined in `watch` (`all`) as argument | string - `current`, `dir`, `all` | yes      | *empty* |
 | abs         | Use the saved file absolute path instead of the relative one                                                                                                    | boolean                          | no       | `false`   |
-| ignore_path | Doesn't use the path of the file saved as command line option                                                                                                   | boolean                          | yes      | *empty*   |
+| ignore_path | Doesn't use the path of the file saved as command line option                                                                                                   | boolean                          | yes      | `false` |
 | options     | Options to pass to the command line interface                                                                                                                   | array                            | no       | *empty*   |
 
 ### notification
