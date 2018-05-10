@@ -1,18 +1,16 @@
-# Execute all the tests in the folder specified here
+# Execute all the tests in the root folder without notification in docker using
+# docker-compose
 watch:
-  folder: src/Tests/
+  root: src/Tests/
   regex: "Test.php"
   ignore_hidden: true
-test: all
 command:
-  path: docker-compose
+  bin: docker-compose
+  scope: all
   options:
     - exec
     - "-T"
     - php
     - bin/phpunit
 notification:
-  img_failure: /home/superUser/.testomatic/images/failure.png
-  img_success: /home/superUser/.testomatic/images/success.png
-  success: OK
-  display_result: false
+  disable: true

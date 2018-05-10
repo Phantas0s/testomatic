@@ -1,18 +1,19 @@
-# Execute all the tests in the whole directory
+# Execute all the tests in the whole directory in docker using docker-compose
 watch:
-  folder: src/Tests/
+  root: src/Tests/
   regex: "Test.php"
   ignore_hidden: true
-test: dir
 command:
-  path: docker-compose
+  bin: docker-compose
+  scope: dir
   options:
     - exec
     - "-T"
     - php
     - bin/phpunit
 notification:
-  img_failure: /home/superUser/.testomatic/images/failure.png
-  img_success: /home/superUser/.testomatic/images/success.png
-  success: OK
+  img_failure: /home/hypnos/.testomatic/images/failure.png
+  img_success: /home/hypnos/.testomatic/images/success.png
+  regex_success: OK
+  regex_failure: error
   display_result: false

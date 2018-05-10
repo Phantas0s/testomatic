@@ -18,8 +18,16 @@ import (
 	"github.com/Phantas0s/watcher"
 )
 
-var conf config.YamlConf
-var file = flag.String("config", ".testomatic.yml", "The config file")
+const (
+	current = "current"
+	dir     = "dir"
+	all     = "all"
+)
+
+var (
+	conf config.YamlConf
+	file = flag.String("config", ".testomatic.yml", "The config file")
+)
 
 // init is called prior to main.
 func init() {
@@ -64,7 +72,9 @@ func main() {
 					result := fireCmd(event)
 					fmt.Println(result)
 
-					notify(conf, result)
+					if !conf.Notification.Disable {
+						notify(conf, result)
+					}
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)
@@ -87,8 +97,8 @@ func fireCmd(event watcher.Event) string {
 
 	path := event.Path
 
-	if filepath.IsAbs(event.Path) && conf.Watch.Abs != true {
-		path = CreateRelative(event.Path, conf.Watch.Root, conf.Test)
+	if filepath.IsAbs(event.Path) && conf.Command.Abs != true {
+		path = CreateRelative(event.Path, conf.Watch.Root, conf.Command.Scope)
 	}
 
 	options := append(conf.Command.Options, path)
@@ -116,10 +126,12 @@ func execCmd(cmdPath string, args []string) string {
 	return out.String()
 }
 
+// CreateRelative path from absolute path
+// A point "." means that the path begins by the current directory
 func CreateRelative(
 	path string,
 	confPath string,
-	testRealm string,
+	scope string,
 ) string {
 	newpath := make([]string, 2)
 	if strings.Index(confPath, ".") != -1 {
@@ -132,15 +144,15 @@ func CreateRelative(
 		newpath = strings.SplitAfter(path, confPath)
 	}
 
-	if testRealm == "dir" {
+	if scope == dir {
 		return confPath + filepath.Dir(newpath[1])
 	}
 
-	if testRealm == "current" {
+	if scope == current {
 		return confPath + newpath[1]
 	}
 
-	if testRealm == "all" {
+	if scope == all {
 		return confPath
 	}
 
@@ -155,10 +167,11 @@ func notify(conf config.YamlConf, result string) {
 		mess = result
 	}
 
-	if match, _ := regexp.MatchString(conf.Notification.RegexSuccess, result); match {
-		notifier.Info("Success!", mess, conf.Notification.ImgSuccess)
-	} else {
+	if match, _ := regexp.MatchString(conf.Notification.RegexFailure, result); match {
 		notifier.Alert("Failure!", mess, conf.Notification.ImgFailure)
 	}
 
+	if match, _ := regexp.MatchString(conf.Notification.RegexSuccess, result); match {
+		notifier.Info("Success!", mess, conf.Notification.ImgSuccess)
+	}
 }

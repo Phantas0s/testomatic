@@ -1,17 +1,16 @@
 # Execute all the project tests
-
 watch:
   folder: ./
   regex: "_test.go"
   ignore_hidden: true
-  ignore_path: true
 command:
-  path: go
+  ignore_path: true
   options:
     - test
-    - ./..
+    - ./...
 notification:
   img_failure: /home/superUser/.testomatic/images/failure.png
   img_success: /home/superUser/.testomatic/images/success.png
-  success: ok
+  regex_success: ok
+  regex_failure: fail
   display_result: false

@@ -1,15 +1,16 @@
 # Test only the single test
 watch:
-  folder: .
-  reg: "_test.go"
-# possible: current, dir, all
-test: dir
+  root: .
+  regex: "_test.go"
+  ignore_hidden: true
 command:
-  path: go
+  bin: go
+  scope: dir
   options:
     - test
 notification:
   img_failure: /home/superUser/.testomatic/images/failure.png
   img_success: /home/superUser/.testomatic/images/success.png
-  success: ok
+  regex_success: "ok"
+  regex_failure: "FAIL"
   display_result: false

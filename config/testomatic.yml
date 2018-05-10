@@ -1,18 +1,21 @@
 watch:
   root: src/Tests
   regex: "Test.php"
-  abs: false
   ignore_hidden: true
 command:
   bin: docker-compose
   ignore_path: true
+  abs: false
+  scope: current
   options:
     - exec
     - "-T"
     - 'php'
     - bin/phpunit
 notification:
+  disable: false
   img_failure: /home/superUser/.autotest/images/failure.png
   img_success: /home/superUser/.autotest/images/success.png
-  regex_success: OK
+  regex_success: ok
+  regex_failure: fail
   display_result: true
