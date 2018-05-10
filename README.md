@@ -47,9 +47,9 @@ watch:
   ignore_hidden: true
 command:
   bin: docker-compose
+  scope: current
   ignore_path: true
   abs: false
-  scope: current
   options:
     - exec
     - "-T"
