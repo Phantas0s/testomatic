@@ -35,7 +35,6 @@ This general behavior can be used to run unit tests when you save them.
 # Configuration file
 
 testomatic need a valid `yaml` configuration file. The best is to create a `.testomatic` file at the root of your project.
-Examples of configuration files are provided in the `examples/` directory for PHP (with PHPUnit) and Go.
 
 You can as well use a different name for the configuration file: in that case you can run `testomatic --config my-config-name.yml`
 
