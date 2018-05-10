@@ -90,8 +90,8 @@ notification:
 | disable        | Disable the desktop notifications                                    | boolean    | no       | false   |
 | img_failure    | Path of image displayed when test is failing                         | string     | no       | *empty* |
 | img_success    | Path of the image displayed when test is a success                   | string     | no       | *empty* |
-| regex_success  | If the result of the command match this regex, the test is a success | array      | yes      | *empty* |
-| regex_failure  | If the result of the command match this regex, the test is a failure | array      | yes      | *empty* |
+| regex_success  | If the result of the command match this regex, the test is a success | string     | yes      | *empty* |
+| regex_failure  | If the result of the command match this regex, the test is a failure | string     | yes      | *empty* |
 | display_result | Display the return of the command in the notification box            | boolean    | no       | false   |
 
 
