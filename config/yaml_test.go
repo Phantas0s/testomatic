@@ -13,7 +13,7 @@ func assert(expected interface{}, got interface{}) {
 }
 
 func TestParse(t *testing.T) {
-	data, err := ioutil.ReadFile("./testomatic.yml")
+	data, err := ioutil.ReadFile("./testdata/testomatic.yml")
 	if err != nil {
 		log.Fatal(err)
 	}

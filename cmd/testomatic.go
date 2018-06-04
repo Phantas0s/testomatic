@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/Phantas0s/testomatic/config"
-	"github.com/Phantas0s/testomatic/notifier"
 	"github.com/Phantas0s/watcher"
+	"github.com/gen2brain/beeep"
 )
 
 const (
@@ -127,6 +127,7 @@ func execCmd(cmdPath string, args []string) string {
 // A point "." means that the path begins by the current directory
 func CreateRelative(path, confPath, scope string) string {
 	newpath := make([]string, 2)
+	// Get the current directory where testomatic runs
 	if strings.Index(confPath, ".") != -1 {
 		confPath = "."
 		currentDir, _ := filepath.Abs(".")
@@ -153,7 +154,6 @@ func CreateRelative(path, confPath, scope string) string {
 }
 
 func notify(conf config.YamlConf, result string) {
-	notifier := new(notifier.Beeep)
 	mess := ""
 
 	if conf.Notification.DisplayResult {
@@ -161,10 +161,10 @@ func notify(conf config.YamlConf, result string) {
 	}
 
 	if match, _ := regexp.MatchString(conf.Notification.RegexFailure, result); match {
-		notifier.Alert("Failure!", mess, conf.Notification.ImgFailure)
+		beeep.Notify("Failure!", mess, conf.Notification.ImgFailure)
 	}
 
 	if match, _ := regexp.MatchString(conf.Notification.RegexSuccess, result); match {
-		notifier.Info("Success!", mess, conf.Notification.ImgSuccess)
+		beeep.Alert("Success!", mess, conf.Notification.ImgSuccess)
 	}
 }
