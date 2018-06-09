@@ -2,6 +2,9 @@
 watch:
   root: src/Tests/
   regex: "Test.php"
+  ignore:
+    - src/Tests/_cache
+    - src/Tests/_fixtures
   ignore_hidden: true
 command:
   bin: bin/phpunit

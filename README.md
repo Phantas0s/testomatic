@@ -71,6 +71,7 @@ notification:
 |---------------|------------------------------------------------------------------------------------------------------------------|------------|----------|---------|
 | root          | The root folder where your tests are. `testomatic` will watch into this folder and every subfolders recursively. | string     | yes      | *empty* |
 | regex         | Every filename matching this regex will be watched.                                                              | string     | yes      | *empty* |
+| ignore        | Fields or folder you want to ignore (vendor for example)                                                         | array      | no       | *empty* |
 | ignore_hidden | Any files or folders beginning by a point `.` won't be watched                                                   | boolean    | no       | `false` |
 
 ### command
