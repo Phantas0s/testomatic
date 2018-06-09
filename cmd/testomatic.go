@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Phantas0s/testomatic/config"
+	"github.com/Phantas0s/testomatic/internal/config"
 	"github.com/Phantas0s/watcher"
 	"github.com/gen2brain/beeep"
 )
@@ -43,7 +43,7 @@ func Run() {
 		log.Fatal(err)
 	}
 
-	// 2 since the event can be writting file or writting directory ... to fix
+	// file or directory writting (so two in total)
 	w.SetMaxEvents(2)
 	w.FilterOps(watcher.Write)
 
