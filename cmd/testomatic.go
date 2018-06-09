@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -19,6 +18,7 @@ import (
 )
 
 const (
+	// scopes to create the relative path
 	current = "current"
 	dir     = "dir"
 	all     = "all"
@@ -30,17 +30,17 @@ var (
 	showWatched = flag.Bool("show", false, "Show files watched")
 )
 
-func Run() {
+func Run() error {
 	flag.Parse()
 	w := watcher.New()
 
 	data, err := ioutil.ReadFile(*file)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	if err := conf.Parse(data); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// file or directory writting (so two in total)
@@ -48,9 +48,11 @@ func Run() {
 	w.FilterOps(watcher.Write)
 
 	w.IgnoreHiddenFiles(conf.Watch.IgnoreHidden)
+	w.Ignore(conf.Watch.Ignore...)
+
 	w.FilterFiles(conf.Watch.Regex)
 	if err := w.AddRecursive(conf.Watch.Root); err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
 	// Print a list of all of the files and folders currently
@@ -61,48 +63,71 @@ func Run() {
 		}
 	}
 
-	go func() {
+	go func() error {
 		for {
 			select {
 			case event := <-w.Event:
 				if !event.IsDir() {
-					result := fireCmd(event)
-					fmt.Println(result)
+					result, err := fireCmd(event)
+					if err != nil {
+						return err
+					}
+
+					fmt.Println(*result)
 
 					if !conf.Notification.Disable {
-						notify(conf, result)
+						notify(conf, *result)
 					}
 				}
 			case err := <-w.Error:
-				log.Fatalln(err)
+				return err
 			case <-w.Closed:
-				return
+				return nil
 			}
 		}
 	}()
 
+	if err != nil {
+		return err
+	}
+
 	fmt.Print("Testomatic is watching the files... \n")
 	if err := w.Start(time.Millisecond * 100); err != nil {
-		log.Fatalln(err)
+		return err
 	}
+
+	return nil
 }
 
-func fireCmd(event watcher.Event) string {
+func fireCmd(event watcher.Event) (*string, error) {
 	if conf.Command.IgnorePath {
-		return execCmd(conf.Command.Bin, conf.Command.Options)
+		result, err := execCmd(conf.Command.Bin, conf.Command.Options)
+		if err != nil {
+			return nil, err
+		}
+		return result, nil
 	}
 
-	path := event.Path
-
+	var path *string
+	path = &event.Path
 	if filepath.IsAbs(event.Path) && conf.Command.Abs != true {
-		path = CreateRelative(event.Path, conf.Watch.Root, conf.Command.Scope)
+		var err error
+		path, err = CreateRelative(event.Path, conf.Watch.Root, conf.Command.Scope)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	options := append(conf.Command.Options, path)
-	return execCmd(conf.Command.Bin, options)
+	options := append(conf.Command.Options, *path)
+	result, err := execCmd(conf.Command.Bin, options)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
-func execCmd(cmdPath string, args []string) string {
+func execCmd(cmdPath string, args []string) (*string, error) {
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 
@@ -117,40 +142,56 @@ func execCmd(cmdPath string, args []string) string {
 
 	err := cmd.Run()
 	if err != nil {
-		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
+		return nil, err
 	}
 
-	return out.String()
+	result := out.String()
+	return &result, nil
 }
 
 // CreateRelative path from absolute path
 // A point "." means that the path begins by the current directory
-func CreateRelative(path, confPath, scope string) string {
+// TODO refactor...
+func CreateRelative(path, confPath, scope string) (*string, error) {
 	newpath := make([]string, 2)
 	// Get the current directory where testomatic runs
 	if strings.Index(confPath, ".") != -1 {
 		confPath = "."
-		currentDir, _ := filepath.Abs(".")
-		split := strings.SplitAfter(currentDir, "/")
-		currentDir = split[len(split)-1]
-		newpath = strings.SplitAfter(path, currentDir)
+		currentDir, err := getProjectDir()
+		if err != nil {
+			return nil, err
+		}
+
+		split := strings.SplitAfter(*currentDir, "/")
+		*currentDir = split[len(split)-1]
+		newpath = strings.SplitAfter(path, *currentDir)
 	} else {
 		newpath = strings.SplitAfter(path, confPath)
 	}
 
 	if scope == dir {
-		return confPath + filepath.Dir(newpath[1])
+		finalPath := confPath + filepath.Dir(newpath[1])
+		return &finalPath, nil
 	}
 
 	if scope == current {
-		return confPath + newpath[1]
+		finalPath := confPath + newpath[1]
+		return &finalPath, nil
 	}
 
 	if scope == all {
-		return confPath
+		return &confPath, nil
 	}
 
-	return ""
+	return nil, nil
+}
+func getProjectDir() (*string, error) {
+	projectDir, err := filepath.Abs(".")
+	if err != nil {
+		return nil, err
+	}
+
+	return &projectDir, nil
 }
 
 func notify(conf config.YamlConf, result string) {

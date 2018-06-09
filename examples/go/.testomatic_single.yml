@@ -2,6 +2,8 @@
 watch:
   root: .
   regex: "_test.go"
+  ignore:
+    - vendor
   ignore_hidden: true
 command:
   bin: go

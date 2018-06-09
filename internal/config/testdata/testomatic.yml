@@ -1,6 +1,8 @@
 watch:
   root: src/Tests
   regex: "Test.php"
+  ignore:
+    - vendor
   ignore_hidden: true
 command:
   bin: docker-compose

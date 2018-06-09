@@ -9,6 +9,7 @@ type (
 		Root         string
 		Regex        string
 		IgnoreHidden bool `yaml:"ignore_hidden"`
+		Ignore       []string
 	}
 
 	command struct {
