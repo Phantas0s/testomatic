@@ -45,6 +45,9 @@ The configuration file can change the behavior of `testomatic` drastically to ad
 watch:
   root: src/Tests
   regex: "Test.php"
+  ignore:
+    - vendor
+    - cache
   ignore_hidden: true
 command:
   bin: docker-compose
@@ -71,7 +74,7 @@ notification:
 |---------------|------------------------------------------------------------------------------------------------------------------|------------|----------|---------|
 | root          | The root folder where your tests are. `testomatic` will watch into this folder and every subfolders recursively. | string     | yes      | *empty* |
 | regex         | Every filename matching this regex will be watched.                                                              | string     | yes      | *empty* |
-| ignore        | Files or folder you want to ignore (vendor for example)                                                         | array      | no       | *empty* |
+| ignore        | Files or folders you want to ignore (vendor for example)                                                         | array      | no       | *empty* |
 | ignore_hidden | Any files or folders beginning by a point `.` won't be watched                                                   | boolean    | no       | `false` |
 
 ### command
