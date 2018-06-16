@@ -142,7 +142,7 @@ func execCmd(cmdPath string, args []string) (*string, error) {
 
 	err := cmd.Run()
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
 	}
 
 	result := out.String()
