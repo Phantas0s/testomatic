@@ -1,18 +1,23 @@
 # Execute all the project tests
 watch:
-  folder: ./
+  root: .
   regex: "_test.go"
   ignore:
     - vendor
+    - cmd/api/integration
+    - pkg/store/integration
   ignore_hidden: true
 command:
   ignore_path: true
+  bin: go
+  scope: dir
   options:
     - test
+    - -v
     - ./...
 notification:
   img_failure: /home/superUser/.testomatic/images/failure.png
   img_success: /home/superUser/.testomatic/images/success.png
-  regex_success: ok
-  regex_failure: fail
-  display_result: false
+  regex_success: "ok"
+  regex_failure: "FAIL"
+display_result: false
