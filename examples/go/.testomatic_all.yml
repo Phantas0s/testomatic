@@ -4,8 +4,6 @@ watch:
   regex: "_test.go"
   ignore:
     - vendor
-    - cmd/api/integration
-    - pkg/store/integration
   ignore_hidden: true
 command:
   ignore_path: true
