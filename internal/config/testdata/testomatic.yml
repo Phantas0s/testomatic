@@ -21,3 +21,4 @@ notification:
   regex_success: ok
   regex_failure: fail
   display_result: true
+  mute: true

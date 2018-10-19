@@ -41,4 +41,5 @@ func TestParse(t *testing.T) {
 	assert("ok", config.Notification.RegexSuccess)
 	assert("fail", config.Notification.RegexFailure)
 	assert(true, config.Notification.DisplayResult)
+	assert(true, config.Notification.Mute)
 }

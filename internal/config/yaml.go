@@ -24,6 +24,7 @@ type (
 		Disable       bool
 		ImgFailure    string `yaml:"img_failure"`
 		ImgSuccess    string `yaml:"img_success"`
+		Mute          bool
 		RegexSuccess  string `yaml:"regex_success"`
 		RegexFailure  string `yaml:"regex_failure"`
 		DisplayResult bool   `yaml:"display_result"`
