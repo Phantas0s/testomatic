@@ -3,6 +3,9 @@
 `testomatic` is a simple CLI which watch and run unit tests automatically on save.
 The result will appear in the terminal as well as a desktop notification.
 
+![testomatic example](example.png "testomatic example")
+*The notification is displayed with a text and image of your choice when saving the test*
+
 
 [Installation](#installation)  
 [Configuration file](#configuration-file)  
