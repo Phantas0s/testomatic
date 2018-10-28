@@ -113,11 +113,11 @@ I included in the `php` examples how to run tests in docker using `docker-compos
 *The notification is displayed with a text and image of your choice when saving the test*
 ![testomatic example success](example_success.png "testomatic example success")
 
-![testomatic example failure](example_failure.png "testomatic example failure")
 *Too many go here*
+![testomatic example failure](example_failure.png "testomatic example failure")
 
-![testomatic example terminal result](terminal_result.png "testomatic example terminal result")
 *The result of the test is displayed in a terminal*
+![testomatic example terminal result](terminal_result.png "testomatic example terminal result")
 
 ## Contributing
 
