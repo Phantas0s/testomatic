@@ -3,9 +3,6 @@
 `testomatic` is a simple CLI which watch and run unit tests automatically on save.
 The result will appear in the terminal as well as a desktop notification.
 
-![testomatic example](example.png "testomatic example")
-*The notification is displayed with a text and image of your choice when saving the test*
-
 
 [Installation](#installation)  
 [Configuration file](#configuration-file)  
@@ -106,6 +103,17 @@ notification:
 
 You will find in the folder `examples` tested configuration files for running `PHPUnit` and `go test`.
 I included in the `php` examples how to run tests in docker using `docker-compose` with or without notifications.
+
+## Screenshots
+
+![testomatic example success](example_success.png "testomatic example success")
+*The notification is displayed with a text and image of your choice when saving the test*
+
+![testomatic example failure](example_failure.png "testomatic example failure")
+*Too many go here*
+
+![testomatic example terminal result](terminal_result.png "testomatic example terminal result")
+*The result of the test is displayed in a terminal*
 
 ## Contributing
 
