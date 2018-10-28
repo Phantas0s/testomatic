@@ -21,21 +21,10 @@ You can find the releases of testomatic here: [Github releases](https://github.c
 Here an easy way to install testomatic on Linux using your favorite shell:
 
 ```shell
-cd /usr/local/bin && sudo curl -LO https://github.com/Phantas0s/testomatic/releases/download/v0.1.0/testomatic && sudo chmod 755 testomatic && cd -
+cd /usr/local/bin && sudo curl -LO https://github.com/Phantas0s/testomatic/releases/download/v0.2.1/testomatic && sudo chmod 755 testomatic && cd -
 ```
 
 You can now normally run `testomatic` from anywhere.
-
-## How it works
-
-When you run `testomatic` it will:
-
-1. Watch any modifications occurring to a set of files. You can specify the files watched using a regex matching filenames.
-2. Execute a command each time the watched files are saved. 
-3. The path of the file saved is added as an argument to the command line. Depending of your configuration, it can be the path of the file itself, the path of the file's directory or directly the root folder watched.
-3. Display the result of the command in the terminal (`stdout`) and in a desktop notification.
-
-This general behavior can be used to run unit tests when you save them.
 
 ## Configuration file
 
