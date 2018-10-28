@@ -1,7 +1,10 @@
 ![testomatic logo](logo.png "testomatic logo")
 
-`testomatic` is a simple CLI which watch and run unit tests automatically on save.
-The result will appear in the terminal as well as a desktop notification.
+`testomatic` is a simple CLI tool which:
+1. Watch test files thanks to a configurable regular expression which match the filenames
+2. Execute a command of your choice when a file watched is saved
+3. Display a desktop notification indicating if you command succeed or failed (see [screenshots](https://github.com/Phantas0s/testomatic#screenshots))
+4. You can continue coding without switching windows / terminal to see if your test passed!
 
 
 [Installation](#installation)  
@@ -106,8 +109,8 @@ I included in the `php` examples how to run tests in docker using `docker-compos
 
 ## Screenshots
 
-![testomatic example success](example_success.png "testomatic example success")
 *The notification is displayed with a text and image of your choice when saving the test*
+![testomatic example success](example_success.png "testomatic example success")
 
 ![testomatic example failure](example_failure.png "testomatic example failure")
 *Too many go here*
