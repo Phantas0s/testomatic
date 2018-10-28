@@ -1,4 +1,4 @@
-# testomatic
+![testomatic logo](logo.png "testomatic logo")
 
 `testomatic` is a simple CLI which watch and run unit tests automatically on save.
 The result will appear in the terminal as well as a desktop notification.
