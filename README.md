@@ -2,10 +2,11 @@
 
 `testomatic` is a simple CLI tool which:
 1. Watch test files thanks to a configurable regular expression which match the filenames
-2. Execute a command of your choice when a file watched is saved
-3. Display a desktop notification indicating if you command succeed or failed (see [screenshots](https://github.com/Phantas0s/testomatic#screenshots))
+2. Execute a command of your choice when a file watched is saved (`go test` for example)
+3. Display a desktop notification indicating if your command succeeded or failed (see [screenshots](https://github.com/Phantas0s/testomatic#screenshots))
 4. You can continue coding without switching windows / terminal to see if your test passed!
 
+## Menu
 
 [Installation](#installation)  
 [Configuration file](#configuration-file)  
