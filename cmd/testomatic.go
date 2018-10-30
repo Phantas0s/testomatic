@@ -206,6 +206,10 @@ func notify(conf config.YamlConf, result string) {
 	}
 
 	if match, _ := regexp.MatchString(conf.Notification.RegexSuccess, result); match {
-		beeep.Alert("Success!", mess, conf.Notification.ImgSuccess)
+		if conf.Notification.Mute {
+			beeep.Notify("Success!", mess, conf.Notification.ImgSuccess)
+		} else {
+			beeep.Alert("Success!", mess, conf.Notification.ImgSuccess)
+		}
 	}
 }
