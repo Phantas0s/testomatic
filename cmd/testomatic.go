@@ -203,6 +203,7 @@ func notify(conf config.YamlConf, result string) {
 
 	if match, _ := regexp.MatchString(conf.Notification.RegexFailure, result); match {
 		beeep.Notify("Failure!", mess, conf.Notification.ImgFailure)
+		return
 	}
 
 	if match, _ := regexp.MatchString(conf.Notification.RegexSuccess, result); match {
