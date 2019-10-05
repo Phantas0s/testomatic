@@ -8,11 +8,11 @@
 
 ## Menu
 
-[Installation](#installation)  
-[Configuration file](#configuration-file)  
-[Examples](#examples)  
-[Contributing](#contributing)  
-[Disclaimer](#disclaimer)  
+[Installation](#installation)
+[Configuration file](#configuration-file)
+[Examples](#examples)
+[Contributing](#contributing)
+[Disclaimer](#disclaimer)
 
 ## Installation
 
@@ -21,7 +21,7 @@ You can find the releases of testomatic here: [Github releases](https://github.c
 Here an easy way to install testomatic on Linux using your favorite shell:
 
 ```shell
-cd /usr/local/bin && sudo curl -LO https://github.com/Phantas0s/testomatic/releases/download/v0.2.1/testomatic && sudo chmod 755 testomatic && cd -
+cd /usr/local/bin && sudo curl -LO https://github.com/Phantas0s/testomatic/releases/download/v0.2.2/testomatic && sudo chmod 755 testomatic && cd -
 ```
 
 You can now normally run `testomatic` from anywhere.
@@ -114,7 +114,7 @@ Pull request is the way ;)
 
 ## Disclaimer
 
-- I only tested `testomatic` on Linux (Arch linux). It might not work on macOS or Windows.
+- I only tested `testomatic` on Linux (Arch linux). It works on MacOS too (thanks [@midnightrun](https://github.com/midnightrun) and it might works on Windows.
 - You can use testomatic to run `Golang` and `PHPUnit` tests automatically. 
 The configuration should be flexible enough for you to use it with other test frameworks / languages.
 
