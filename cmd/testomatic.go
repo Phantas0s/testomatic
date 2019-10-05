@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/Phantas0s/testomatic/internal/config"
-	"github.com/Phantas0s/watcher"
 	"github.com/gen2brain/beeep"
+	"github.com/radovskyb/watcher"
 )
 
 const (
@@ -50,7 +50,9 @@ func Run() error {
 	w.IgnoreHiddenFiles(conf.Watch.IgnoreHidden)
 	w.Ignore(conf.Watch.Ignore...)
 
-	w.FilterFiles(conf.Watch.Regex)
+	r := regexp.MustCompile(conf.Watch.Regex)
+	w.AddFilterHook(watcher.RegexFilterHook(r, false))
+
 	if err := w.AddRecursive(conf.Watch.Root); err != nil {
 		return err
 	}
