@@ -114,7 +114,7 @@ Pull request is the way ;)
 
 ## Disclaimer
 
-- I only tested `testomatic` on Linux (Arch linux). It works on MacOS too (thanks [@midnightrun](https://github.com/midnightrun) and it might works on Windows.
+- I only tested `testomatic` on Linux (Arch linux). It works on MacOS too (thanks [@midnightrun](https://github.com/midnightrun)).
 - You can use testomatic to run `Golang` and `PHPUnit` tests automatically. 
 The configuration should be flexible enough for you to use it with other test frameworks / languages.
 
